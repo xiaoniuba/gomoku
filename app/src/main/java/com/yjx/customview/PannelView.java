@@ -32,12 +32,13 @@ public class PannelView extends View {
     private Bitmap mBlackPiece;
     private ArrayList<Point> mWhitePieces = new ArrayList<>();//用来存储用户已经下子的点
     private ArrayList<Point> mBlackPieces = new ArrayList<>();
-    private boolean mIsCurrentWhite = true;//当前轮到白子下（这里默认白子先手）
+    private boolean mIsCurWhiteTurn = true;//当前轮到白子下（这里默认白子先手）
     private Point mCurClickPoint;//当前下子的点
     private boolean mIsGameOver;//标识游戏结束
     private boolean mIsWhiteWin;//是否是白子赢了
-    private OnGameOverListener mListener;
-    private static final int STROKE_LINE_WIDTH = 1;//dp
+    private OnGameOverListener mGameOverListener;
+    private OnTurnChangedListener mTurnChangedListener;
+    private static final int STROKE_LINE_WIDTH = 2;//dp
 
     //数据保存与恢复相关常量
     private static final String DEFAULT_INSTANCE = "default_instance";
@@ -46,8 +47,16 @@ public class PannelView extends View {
     private static final String IS_CUR_WHITE = "is_cur_white";
     private static final String CUR_CLICK_POINT = "cur_click_point";
 
-    public void registerListner(OnGameOverListener listener) {
-        this.mListener = listener;
+    public void registerGameOverListner(OnGameOverListener listener) {
+        this.mGameOverListener = listener;
+    }
+
+    public void registerTurnChangedListener(OnTurnChangedListener turnChangedListener) {
+        this.mTurnChangedListener = turnChangedListener;
+    }
+
+    public boolean getIsCurWhiteTurn() {
+        return mIsCurWhiteTurn;
     }
 
     public PannelView(Context context) {
@@ -65,7 +74,7 @@ public class PannelView extends View {
 
     private void init() {
         mPaint = new Paint();
-        mPaint.setColor(0x66000000);
+        mPaint.setColor(getContext().getResources().getColor(R.color.white));
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -123,8 +132,8 @@ public class PannelView extends View {
         drawPiece(canvas);
         if (checkGameOver()) {
             mIsGameOver = true;
-            if (mListener != null) {
-                mListener.onGameOver(mIsWhiteWin);
+            if (mGameOverListener != null) {
+                mGameOverListener.onGameOver(mIsWhiteWin);
             }
         }
     }
@@ -177,7 +186,7 @@ public class PannelView extends View {
      * @return true: game over
      */
     private boolean checkGameOver() {
-        if (mIsCurrentWhite) {//当前轮到白子下，即应该检验上一手黑子是否连成
+        if (mIsCurWhiteTurn) {//当前轮到白子下，即应该检验上一手黑子是否连成
             boolean blackWin = checkHorizontalOrVerticalDone(mBlackPieces);
             if (!blackWin) {
                 blackWin = checkLeftOrRightOblique(mBlackPieces);
@@ -320,12 +329,15 @@ public class PannelView extends View {
             if (mWhitePieces.contains(mCurClickPoint) || mBlackPieces.contains(mCurClickPoint)) {//当前点已经下过子了
                 return false;
             }
-            if (mIsCurrentWhite) {
+            if (mIsCurWhiteTurn) {
                 mWhitePieces.add(mCurClickPoint);
             }else {
                 mBlackPieces.add(mCurClickPoint);
             }
-            mIsCurrentWhite = !mIsCurrentWhite;
+            mIsCurWhiteTurn = !mIsCurWhiteTurn;
+            if (mTurnChangedListener != null) {
+                mTurnChangedListener.onTurnChangeListener(mIsCurWhiteTurn);
+            }
             invalidate();//请求重绘
         }
         return true;
@@ -351,7 +363,7 @@ public class PannelView extends View {
         mIsGameOver = false;
         mIsWhiteWin = false;
         mCurClickPoint = null;
-        mIsCurrentWhite = true;
+        mIsCurWhiteTurn = true;
         invalidate();
     }
 
@@ -362,7 +374,7 @@ public class PannelView extends View {
         bundle.putParcelable(DEFAULT_INSTANCE, super.onSaveInstanceState());
         bundle.putParcelableArrayList(WHITE_PIECES, mWhitePieces);
         bundle.putParcelableArrayList(BLACK_PIECES, mBlackPieces);
-        bundle.putBoolean(IS_CUR_WHITE, mIsCurrentWhite);
+        bundle.putBoolean(IS_CUR_WHITE, mIsCurWhiteTurn);
         bundle.putParcelable(CUR_CLICK_POINT, mCurClickPoint);
         return bundle;
     }
@@ -375,7 +387,7 @@ public class PannelView extends View {
             super.onRestoreInstanceState(defaultState);//系统默认保存的数据
             mWhitePieces = bundle.getParcelableArrayList(WHITE_PIECES);
             mBlackPieces = bundle.getParcelableArrayList(BLACK_PIECES);
-            mIsCurrentWhite = bundle.getBoolean(IS_CUR_WHITE);
+            mIsCurWhiteTurn = bundle.getBoolean(IS_CUR_WHITE);
             mCurClickPoint = bundle.getParcelable(CUR_CLICK_POINT);
             return;
         }
@@ -384,5 +396,9 @@ public class PannelView extends View {
 
     public interface OnGameOverListener {
         void onGameOver(boolean isWhiteWin);
+    }
+
+    public interface  OnTurnChangedListener {
+        void onTurnChangeListener(boolean isWhiteTurn);
     }
 }
