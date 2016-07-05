@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:gravity="center"
-            android:background="@color/orange2"/>
+            android:background="@color/dark_blue"/>
         <TextView
             android:id="@+id/bt_2"
             android:text="btn1"
@@ -36,7 +36,7 @@
             android:padding="10dp"
             android:layout_marginLeft="10dp"
             android:gravity="center"
-            android:background="@color/orange"/>
+            android:background="@color/dark_green"/>
     </LinearLayout>
 
 </RelativeLayout>
