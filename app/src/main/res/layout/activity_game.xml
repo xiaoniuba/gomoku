@@ -24,16 +24,18 @@
         android:id="@+id/iv_which_turn"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_alignBottom="@+id/ll_order"
-        android:layout_marginLeft="15dp"/>
+        android:layout_marginLeft="15dp"
+        android:layout_above="@+id/v_pannel"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        />
 
     <LinearLayout
         android:id="@+id/ll_order"
-        android:layout_toRightOf="@+id/iv_which_turn"
-        android:layout_width="wrap_content"
+        android:layout_below="@+id/v_pannel"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginLeft="15dp"
         android:gravity="center"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="20dp">
@@ -57,16 +59,6 @@
             android:padding="10dp"
             android:textColor="@color/Gray"
             android:layout_marginRight="10dp"/>
-
-        <TextView
-            android:background="@drawable/bg_text"
-            android:text="Settings"
-            android:id="@+id/tv_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:textColor="@color/Gray"
-            android:visibility="gone"/>
 
     </LinearLayout>
 

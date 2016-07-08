@@ -44,10 +44,9 @@ public class GameActivity extends BaseActivity implements PannelView.OnGameOverL
         mPannelView.registerTurnChangedListener(this);
         mNewGameText = (TextView) findViewById(R.id.tv_new_game);
         mNewGameText.setOnClickListener(this);
-        mNewGameText = (TextView) findViewById(R.id.tv_regret);
-        mNewGameText.setOnClickListener(this);
-        mSettingsText = (TextView) findViewById(R.id.tv_settings);
-        mSettingsText.setOnClickListener(this);
+        mRegretText = (TextView) findViewById(R.id.tv_regret);
+        mRegretText.setOnClickListener(this);
+        setOnclickListener(mGoLoginText, mNewGameText, mRegretText);
         mWhichTurnImage = (ImageView) findViewById(R.id.iv_which_turn);
         mWhitePiece = BitmapFactory.decodeResource(getResources(), R.drawable.stone_w2);
         mBlackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.stone_b1);
@@ -88,9 +87,6 @@ public class GameActivity extends BaseActivity implements PannelView.OnGameOverL
                 if (mPannelView != null) {
                     mPannelView.regretLastStep();
                 }
-                break;
-            case R.id.tv_settings:
-                //todo 等待添加
                 break;
             default:
                 break;
