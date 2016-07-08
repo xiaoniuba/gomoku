@@ -3,12 +3,15 @@ package com.yjx.utils;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.yjx.wuziqi.R;
@@ -49,5 +52,14 @@ public class DialogUtil {
         mPopupWindow.setBackgroundDrawable(new ColorDrawable(0x33000000));
         mPopupWindow.setOutsideTouchable(true);
         mPopupWindow.showAtLocation(parentView, Gravity.CENTER, 0, 0);
+    }
+
+    public static PopupWindow createPopupWindowWithCustomView(View parentView, View contentView) {
+        mPopupWindow = new PopupWindow(contentView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
+        mPopupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
+        mPopupWindow.setOutsideTouchable(true);
+        mPopupWindow.setAnimationStyle(R.style.anim_menu_bottombar);
+        mPopupWindow.showAtLocation(parentView, Gravity.CENTER, 0, 0);
+        return mPopupWindow;
     }
 }

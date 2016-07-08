@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.yjx.model.Piece;
 import com.yjx.utils.Constants;
 import com.yjx.utils.Util;
 import com.yjx.wuziqi.R;
@@ -28,12 +29,13 @@ public class PannelView extends View {
     private Paint mPaint;
     private Paint mPiecePaint;//绘制棋子画笔
     private static final float RATIO = 3 * 1.0f / 4;//棋子图片占行高的比例
+    private int mLineColorId = R.color.Gray;//线的颜色
     private Bitmap mWhitePiece;
     private Bitmap mBlackPiece;
-    private ArrayList<Point> mWhitePieces = new ArrayList<>();//用来存储用户已经下子的点
-    private ArrayList<Point> mBlackPieces = new ArrayList<>();
+    private ArrayList<Piece> mWhitePieces = new ArrayList<>();//用来存储用户已经下子的点
+    private ArrayList<Piece> mBlackPieces = new ArrayList<>();
     private boolean mIsCurWhiteTurn = true;//当前轮到白子下（这里默认白子先手）
-    private Point mCurClickPoint;//当前下子的点
+    private Piece mCurClickPiece;//当前已下子的点
     private boolean mIsGameOver;//标识游戏结束
     private boolean mIsWhiteWin;//是否是白子赢了
     private OnGameOverListener mGameOverListener;
@@ -59,6 +61,35 @@ public class PannelView extends View {
         return mIsCurWhiteTurn;
     }
 
+    /**
+     * 悔棋
+     */
+    public void regretLastStep() {
+        if (mIsCurWhiteTurn) {//当前轮到白方下子，即黑方要悔棋
+            if (mBlackPieces != null && !mBlackPieces.isEmpty()) {
+                mBlackPieces.remove(mBlackPieces.size() - 1);
+                if (mWhitePieces != null && !mWhitePieces.isEmpty()) {
+                    mCurClickPiece = mWhitePieces.get(mWhitePieces.size() - 1);
+                }
+                mIsCurWhiteTurn = !mIsCurWhiteTurn;
+                notifyObserverTurnChanged();
+                invalidate();
+                return;
+            }
+        }else {
+            if (mWhitePieces != null && !mWhitePieces.isEmpty()) {
+                mWhitePieces.remove(mWhitePieces.size() - 1);
+                if (mBlackPieces != null && !mBlackPieces.isEmpty()) {
+                    mCurClickPiece = mBlackPieces.get(mBlackPieces.size() - 1);
+                }
+                mIsCurWhiteTurn = !mIsCurWhiteTurn;
+                notifyObserverTurnChanged();
+                invalidate();
+                return;
+            }
+        }
+    }
+
     public PannelView(Context context) {
         this(context, null);
     }
@@ -74,7 +105,7 @@ public class PannelView extends View {
 
     private void init() {
         mPaint = new Paint();
-        mPaint.setColor(getContext().getResources().getColor(R.color.white));
+        mPaint.setColor(getContext().getResources().getColor(mLineColorId));
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -168,13 +199,13 @@ public class PannelView extends View {
      */
     private void drawPiece(Canvas canvas) {
         for (int i = 0; i < mWhitePieces.size(); i++) {
-            Point point = mWhitePieces.get(i);
+            Piece point = mWhitePieces.get(i);
             float left = (point.x + (1 - RATIO) / 2) * mLineHeight;
             float top = (point.y + (1 - RATIO) / 2) * mLineHeight;
             canvas.drawBitmap(mWhitePiece, left, top, mPiecePaint);
         }
         for (int i = 0; i < mBlackPieces.size(); i++) {
-            Point point = mBlackPieces.get(i);
+            Piece point = mBlackPieces.get(i);
             float left = (point.x + (1 - RATIO) / 2) * mLineHeight;
             float top = (point.y + (1 - RATIO) / 2) * mLineHeight;
             canvas.drawBitmap(mBlackPiece, left, top, mPiecePaint);
@@ -213,14 +244,14 @@ public class PannelView extends View {
      * @param points
      * @return
      */
-    private boolean checkHorizontalOrVerticalDone(List<Point> points) {
-        if (points == null || points.isEmpty() || mCurClickPoint == null) {
+    private boolean checkHorizontalOrVerticalDone(List<Piece> points) {
+        if (points == null || points.isEmpty() || mCurClickPiece == null) {
             return false;
         }
         int horizontalCount = 1;//横向计数
         int verticalCount = 1;//纵向计数
         for (int i = 1; i < Constants.WIN_PIECES_NUM; i++) {//往左检查
-            Point leftPoint = new Point(mCurClickPoint.x - i, mCurClickPoint.y);
+            Piece leftPoint = new Piece(mCurClickPiece.x - i, mCurClickPiece.y);
             if (points.contains(leftPoint)) {
                 horizontalCount++;
                 continue;
@@ -229,7 +260,7 @@ public class PannelView extends View {
             }
         }
         for (int i = 1; i < Constants.WIN_PIECES_NUM; i++) {//往右检查
-            Point rightPoint = new Point(mCurClickPoint.x + i, mCurClickPoint.y);
+            Piece rightPoint = new Piece(mCurClickPiece.x + i, mCurClickPiece.y);
             if (points.contains(rightPoint)) {
                 horizontalCount++;
                 continue;
@@ -238,7 +269,7 @@ public class PannelView extends View {
             }
         }
         for (int i = 1; i < Constants.WIN_PIECES_NUM; i++) {//往上检查
-            Point upPoint = new Point(mCurClickPoint.x, mCurClickPoint.y - i);
+            Piece upPoint = new Piece(mCurClickPiece.x, mCurClickPiece.y - i);
             if (points.contains(upPoint)) {
                 verticalCount++;
                 continue;
@@ -247,7 +278,7 @@ public class PannelView extends View {
             }
         }
         for (int i = 1; i < Constants.WIN_PIECES_NUM; i++) {//往下检查
-            Point belowPoint = new Point(mCurClickPoint.x, mCurClickPoint.y + i);
+            Piece belowPoint = new Piece(mCurClickPiece.x, mCurClickPiece.y + i);
             if (points.contains(belowPoint)) {
                 verticalCount++;
                 continue;
@@ -265,14 +296,14 @@ public class PannelView extends View {
      * 校验斜向是否连成
      * @return
      */
-    private boolean checkLeftOrRightOblique(List<Point> points) {
-        if (points == null || points.isEmpty() || mCurClickPoint == null) {
+    private boolean checkLeftOrRightOblique(List<Piece> points) {
+        if (points == null || points.isEmpty() || mCurClickPiece == null) {
             return false;
         }
         int leftObliqueCounts = 1;
         int rightObliqueCounts = 1;
         for (int i = 1; i < Constants.WIN_PIECES_NUM; i++) {//左斜向上检查
-            Point leftUpPoint = new Point(mCurClickPoint.x + i, mCurClickPoint.y - i);
+            Piece leftUpPoint = new Piece(mCurClickPiece.x + i, mCurClickPiece.y - i);
             if (points.contains(leftUpPoint)) {
                 leftObliqueCounts++;
                 continue;
@@ -281,7 +312,7 @@ public class PannelView extends View {
             }
         }
         for (int i = 1; i < Constants.WIN_PIECES_NUM; i++) {//左斜向下检查
-            Point leftDownPoint = new Point(mCurClickPoint.x - i, mCurClickPoint.y + i);
+            Piece leftDownPoint = new Piece(mCurClickPiece.x - i, mCurClickPiece.y + i);
             if (points.contains(leftDownPoint)) {
                 leftObliqueCounts++;
                 continue;
@@ -293,7 +324,7 @@ public class PannelView extends View {
             return true;
         }
         for (int i = 1; i < Constants.WIN_PIECES_NUM; i++) {//右斜向上检查
-            Point rightUpPoint = new Point(mCurClickPoint.x - i, mCurClickPoint.y - i);
+            Piece rightUpPoint = new Piece(mCurClickPiece.x - i, mCurClickPiece.y - i);
             if (points.contains(rightUpPoint)) {
                 rightObliqueCounts++;
                 continue;
@@ -302,7 +333,7 @@ public class PannelView extends View {
             }
         }
         for (int i = 1; i < Constants.WIN_PIECES_NUM; i++) {//右斜向下检查
-            Point rightDownPoint = new Point(mCurClickPoint.x + i, mCurClickPoint.y + i);
+            Piece rightDownPoint = new Piece(mCurClickPiece.x + i, mCurClickPiece.y + i);
             if (points.contains(rightDownPoint)) {
                 rightObliqueCounts++;
                 continue;
@@ -325,22 +356,29 @@ public class PannelView extends View {
         if (action == MotionEvent.ACTION_UP) {//用户手指抬起时处理（不在ACTION_DOWN时处理，防止嵌套在ScrollView中时滚动时落子）
             int x = (int) event.getX();
             int y = (int) event.getY();
-            mCurClickPoint = getProperPoint(x, y);
-            if (mWhitePieces.contains(mCurClickPoint) || mBlackPieces.contains(mCurClickPoint)) {//当前点已经下过子了
+            mCurClickPiece = getProperPoint(x, y);
+            if (mWhitePieces.contains(mCurClickPiece) || mBlackPieces.contains(mCurClickPiece)) {//当前点已经下过子了
                 return false;
             }
             if (mIsCurWhiteTurn) {
-                mWhitePieces.add(mCurClickPoint);
+                mWhitePieces.add(mCurClickPiece);
             }else {
-                mBlackPieces.add(mCurClickPoint);
+                mBlackPieces.add(mCurClickPiece);
             }
             mIsCurWhiteTurn = !mIsCurWhiteTurn;
-            if (mTurnChangedListener != null) {
-                mTurnChangedListener.onTurnChangeListener(mIsCurWhiteTurn);
-            }
+            notifyObserverTurnChanged();
             invalidate();//请求重绘
         }
         return true;
+    }
+
+    /**
+     * 通知所有监听者落子权交换
+     */
+    private void notifyObserverTurnChanged() {
+        if (mTurnChangedListener != null) {
+            mTurnChangedListener.onTurnChangeListener(mIsCurWhiteTurn);
+        }
     }
 
     /**
@@ -350,8 +388,8 @@ public class PannelView extends View {
      * @param y
      * @return
      */
-    private Point getProperPoint(int x, int y) {
-        return new Point((int) (x / mLineHeight), (int) (y / mLineHeight));
+    private Piece getProperPoint(int x, int y) {
+        return new Piece((int) (x / mLineHeight), (int) (y / mLineHeight));
     }
 
     /**
@@ -362,7 +400,7 @@ public class PannelView extends View {
         mBlackPieces.clear();
         mIsGameOver = false;
         mIsWhiteWin = false;
-        mCurClickPoint = null;
+        mCurClickPiece = null;
         mIsCurWhiteTurn = true;
         invalidate();
     }
@@ -370,12 +408,11 @@ public class PannelView extends View {
     @Override
     protected Parcelable onSaveInstanceState() {
         Bundle bundle = new Bundle();
-        android.util.Log.e("yjx", super.onSaveInstanceState().toString());
         bundle.putParcelable(DEFAULT_INSTANCE, super.onSaveInstanceState());
         bundle.putParcelableArrayList(WHITE_PIECES, mWhitePieces);
         bundle.putParcelableArrayList(BLACK_PIECES, mBlackPieces);
         bundle.putBoolean(IS_CUR_WHITE, mIsCurWhiteTurn);
-        bundle.putParcelable(CUR_CLICK_POINT, mCurClickPoint);
+        bundle.putParcelable(CUR_CLICK_POINT, mCurClickPiece);
         return bundle;
     }
 
@@ -388,7 +425,7 @@ public class PannelView extends View {
             mWhitePieces = bundle.getParcelableArrayList(WHITE_PIECES);
             mBlackPieces = bundle.getParcelableArrayList(BLACK_PIECES);
             mIsCurWhiteTurn = bundle.getBoolean(IS_CUR_WHITE);
-            mCurClickPoint = bundle.getParcelable(CUR_CLICK_POINT);
+            mCurClickPiece = bundle.getParcelable(CUR_CLICK_POINT);
             return;
         }
         super.onRestoreInstanceState(state);

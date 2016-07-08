@@ -20,8 +20,8 @@ public class SharedPreferenceUtil {
         return context.getSharedPreferences(Constants.SharedPreferenceConstant.PREFERENCE_NAME, PreferenceActivity.MODE_MULTI_PROCESS).getString(propertyName, "");
     }
 
-    public static String getSharedPreferences(String preferenceName, String propertyName, Context context, String defaultValue) {
-        return context.getSharedPreferences(preferenceName, PreferenceActivity.MODE_PRIVATE).getString(propertyName, defaultValue);
+    public static String getSharedPreferences(String propertyName, String defaultValue, Context context) {
+        return context.getSharedPreferences(Constants.SharedPreferenceConstant.PREFERENCE_NAME, PreferenceActivity.MODE_PRIVATE).getString(propertyName, defaultValue);
     }
 
     public static int getSharedPreferences(String preferenceName, String propertyName, Context context, int defaultValue) {
