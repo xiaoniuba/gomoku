@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_wood">
+    android:background="@color/Ivory">
 
     <TextView
         android:id="@+id/tv_go_login"
@@ -20,29 +20,36 @@
         android:layout_centerInParent="true"
         />
 
-    <LinearLayout
-        android:id="@+id/ll_hint"
+    <ImageView
+        android:id="@+id/iv_which_turn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_toLeftOf="@+id/v_pannel"
+        android:layout_centerVertical="true"/>
+
+    <TextView
+        android:background="@drawable/bg_text"
+        android:text="@string/new_game"
+        android:id="@+id/tv_new_game"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="10dp"
-        android:background="@color/coffee">
+        android:layout_toRightOf="@+id/v_pannel"
+        android:layout_marginTop="20dp"
+        android:padding="10dp"
+        android:textColor="@color/Gray"
+        android:layout_marginRight="10dp"/>
 
-        <TextView
-            android:text="which turn"
-            android:id="@+id/tv_which_turn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:textColor="@color/white"/>
-
-        <ImageView
-            android:id="@+id/iv_which_turn"
-            android:layout_width="30dp"
-            android:layout_height="30dp" />
-
-    </LinearLayout>
+    <TextView
+        android:background="@drawable/bg_text"
+        android:text="@string/regret"
+        android:id="@+id/tv_regret"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/v_pannel"
+        android:layout_below="@+id/tv_new_game"
+        android:layout_marginTop="20dp"
+        android:padding="10dp"
+        android:textColor="@color/Gray"
+        android:layout_marginRight="10dp"/>
 
 </RelativeLayout>
