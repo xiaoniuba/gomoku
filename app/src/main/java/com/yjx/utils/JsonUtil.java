@@ -14,6 +14,9 @@ public class JsonUtil {
         return mGson.toJson(o);
     }
     public static final Object decode(String jsonStr, Class clazz) {
-        return mGson.fromJson(jsonStr, clazz);
+        if (jsonStr instanceof String) {
+            return mGson.fromJson(jsonStr, clazz);
+        }
+        return null;
     }
 }

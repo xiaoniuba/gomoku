@@ -22,13 +22,26 @@ import com.yjx.wuziqi.R;
  */
 public class DialogUtil {
     private static PopupWindow mPopupWindow;
-    public static void createDialog(Context context, View parentView, String msg,
+    private static Context mContext = null;
+    private static LayoutInflater mInflater = null;
+    public static void init(Context context) {
+        mContext = context;
+        mInflater = LayoutInflater.from(context);
+    }
+    public static void createDialog(View parentView, String msg,
                                            String leftBtnStr, String rightBtnStr,
                                            final Runnable leftClickRunnable, final Runnable righClickRunnable) {
-        View contentView = LayoutInflater.from(context).inflate(R.layout.dialog_main, null);
-        TextView msgText = (TextView) contentView.findViewById(R.id.tv_msg);
-        TextView leftBtnText = (TextView) contentView.findViewById(R.id.bt_1);
-        TextView rightBtnText = (TextView) contentView.findViewById(R.id.bt_2);
+        if (mInflater == null) {
+            return;
+        }
+        RelativeLayout layout = (RelativeLayout) mInflater.inflate(R.layout.layout_popupwindow_container, null);
+        LinearLayout containerLayout = (LinearLayout) layout.findViewById(R.id.ll_container);
+        containerLayout.setBackgroundResource(R.drawable.bg_popupwindow);
+        View dialogLayout = mInflater.inflate(R.layout.dialog_main, null);
+        containerLayout.addView(dialogLayout);
+        TextView msgText = (TextView) dialogLayout.findViewById(R.id.tv_msg);
+        TextView leftBtnText = (TextView) dialogLayout.findViewById(R.id.bt_1);
+        TextView rightBtnText = (TextView) dialogLayout.findViewById(R.id.bt_2);
         msgText.setText(msg);
         leftBtnText.setText(leftBtnStr);
         rightBtnText.setText(rightBtnStr);
@@ -48,8 +61,8 @@ public class DialogUtil {
         });
         leftBtnText.setVisibility(StringUtil.isNullOrEmpty(leftBtnStr) ? View.GONE : View.VISIBLE);
         rightBtnText.setVisibility(StringUtil.isNullOrEmpty(rightBtnStr) ? View.GONE : View.VISIBLE);
-        mPopupWindow = new PopupWindow(contentView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, false);
-        mPopupWindow.setBackgroundDrawable(new ColorDrawable(0x33000000));
+        mPopupWindow = new PopupWindow(layout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
+        mPopupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
         mPopupWindow.setOutsideTouchable(true);
         mPopupWindow.showAtLocation(parentView, Gravity.CENTER, 0, 0);
     }

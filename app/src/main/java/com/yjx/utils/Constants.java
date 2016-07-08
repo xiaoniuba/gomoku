@@ -12,13 +12,23 @@ public class Constants {
         String PREFERENCE_NAME = "GomokuApp";
     }
 
-    public enum ThemeModel {
-        DAY, NIGHT, DOWN;
-    }
-
-    public interface ThemeModelStrs {
+    public interface ThemeModel4Show {
         String DAY = "日间模式";
         String NIGHT = "夜间模式";
         String DOWN = "傍晚模式";
+
+        String DAY_EN = "Day model";
+        String NIGHT_EN = "Night model";
+        String DOWN_EN = "Down model";
+    }
+
+    public interface Language4Show {
+        String ENGLISH = "English";
+        String SIMPLED_CHINESE = "简体中文";
+    }
+
+    public interface Language {
+        String ENGLISH = "english";
+        String SIMPLED_CHINESE = "simple_chinese";
     }
 }

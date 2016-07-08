@@ -24,12 +24,12 @@ public class SharedPreferenceUtil {
         return context.getSharedPreferences(Constants.SharedPreferenceConstant.PREFERENCE_NAME, PreferenceActivity.MODE_PRIVATE).getString(propertyName, defaultValue);
     }
 
-    public static int getSharedPreferences(String preferenceName, String propertyName, Context context, int defaultValue) {
-        return context.getSharedPreferences(preferenceName, PreferenceActivity.MODE_PRIVATE).getInt(propertyName, defaultValue);
+    public static int getSharedPreferences(String propertyName, Context context, int defaultValue) {
+        return context.getSharedPreferences(Constants.SharedPreferenceConstant.PREFERENCE_NAME, PreferenceActivity.MODE_PRIVATE).getInt(propertyName, defaultValue);
     }
 
-    public static long getSharedPreferences(String preferenceName, String propertyName, Context context, long defaultValue) {
-        return context.getSharedPreferences(preferenceName, PreferenceActivity.MODE_PRIVATE).getLong(propertyName, defaultValue);
+    public static long getSharedPreferences(String propertyName, Context context, long defaultValue) {
+        return context.getSharedPreferences(Constants.SharedPreferenceConstant.PREFERENCE_NAME, PreferenceActivity.MODE_PRIVATE).getLong(propertyName, defaultValue);
     }
 
     public static boolean setSharedPreferences(String propertyName, String propertyValue, Context context) {
@@ -37,8 +37,8 @@ public class SharedPreferenceUtil {
                 .putString(propertyName, propertyValue).commit();
     }
 
-    public static boolean setSharedPreferences(String preferenceName, String propertyName, int propertyValue, Context context) {
-        return context.getSharedPreferences(preferenceName, Context.MODE_PRIVATE).edit()
+    public static boolean setSharedPreferences(String propertyName, int propertyValue, Context context) {
+        return context.getSharedPreferences(Constants.SharedPreferenceConstant.PREFERENCE_NAME, Context.MODE_PRIVATE).edit()
                 .putInt(propertyName, propertyValue).commit();
     }
 

@@ -1,6 +1,7 @@
 package com.yjx.activity;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -15,8 +16,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.yjx.com.yjx.adapter.SettingsAdapter;
+import com.yjx.model.Language;
 import com.yjx.model.Settings;
 import com.yjx.model.SettingsItem;
+import com.yjx.model.ThemeModel;
 import com.yjx.utils.Constants;
 import com.yjx.utils.DialogUtil;
 import com.yjx.utils.JsonUtil;
@@ -26,6 +29,7 @@ import com.yjx.utils.StringUtil;
 import com.yjx.utils.Util;
 import com.yjx.wuziqi.R;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +39,8 @@ import java.util.List;
  */
 public class SettingsActivity extends BaseActivity {
 
+    private static final int CHOOSE_MODEL = 1;
+    private static final int CHOOSE_LANG = 2;
     public static final int RESULT_CODE_DONE = 1;
     public static final String MODEL_PROPERTIES = "model_properties";
 
@@ -46,17 +52,37 @@ public class SettingsActivity extends BaseActivity {
     private LayoutInflater mInflater;
     private Settings mSettings = new Settings();
     private String[] mThemeModelStrs =
-            {Constants.ThemeModelStrs.DAY, Constants.ThemeModelStrs.NIGHT, Constants.ThemeModelStrs.DOWN,};
+            {Constants.ThemeModel4Show.DAY, Constants.ThemeModel4Show.NIGHT, Constants.ThemeModel4Show.DOWN,};
+    private List<Language> mLangs;
+    private List<ThemeModel> mThemeModels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mInflater = LayoutInflater.from(this);
         setContentView(R.layout.activity_settings);
+        initData();
+        mInflater = LayoutInflater.from(this);
         initList();
         mDoneText = (TextView) findViewById(R.id.tv_right_function);
         mDoneText.setText(getString(R.string.done));
-        setOnclickListener(mDoneText);
+        View view = findViewById(R.id.iv_back);
+        setOnclickListener(mDoneText, view);
+    }
+
+    private void initData() {
+        mLangs = new ArrayList<>();
+        Language en = new Language(Constants.Language.ENGLISH, Constants.Language4Show.ENGLISH);
+        Language zh = new Language(Constants.Language.SIMPLED_CHINESE, Constants.Language4Show.SIMPLED_CHINESE);
+        mLangs.add(en);
+        mLangs.add(zh);
+
+        mThemeModels = new ArrayList<>();
+        ThemeModel day = new ThemeModel(ThemeModel.ThemeType.DAY, Constants.ThemeModel4Show.DAY, Constants.ThemeModel4Show.DAY_EN);
+        ThemeModel night = new ThemeModel(ThemeModel.ThemeType.NIGHT, Constants.ThemeModel4Show.NIGHT, Constants.ThemeModel4Show.NIGHT_EN);
+        ThemeModel down = new ThemeModel(ThemeModel.ThemeType.DOWN, Constants.ThemeModel4Show.DOWN, Constants.ThemeModel4Show.DOWN_EN);
+        mThemeModels.add(day);
+        mThemeModels.add(night);
+        mThemeModels.add(down);
     }
 
     private void initList() {
@@ -66,7 +92,9 @@ public class SettingsActivity extends BaseActivity {
             @Override
             public void onItemClick(View convertView, String contentStr) {
                 if (getString(R.string.model).equals(contentStr)) {
-                    chooseModel();
+                    showChooseWindow(CHOOSE_MODEL);
+                }else if (getString(R.string.multilang).equals(contentStr)) {
+                    showChooseWindow(CHOOSE_LANG);
                 }
             }
         });
@@ -89,6 +117,9 @@ public class SettingsActivity extends BaseActivity {
             case R.id.tv_right_function:
                 backToWelcomAct();
                 break;
+            case R.id.iv_back:
+                finish();
+                break;
             default:
                 break;
         }
@@ -102,7 +133,7 @@ public class SettingsActivity extends BaseActivity {
         finish();
     }
 
-    private void chooseModel() {
+    private void showChooseWindow(int flag) {
         if (mChooseModelLayout == null) {
             RelativeLayout layout = (RelativeLayout) mInflater.inflate(R.layout.layout_popupwindow_container, null);
             mChooseModelLayout = (LinearLayout) layout.findViewById(R.id.ll_container);
@@ -111,52 +142,79 @@ public class SettingsActivity extends BaseActivity {
         if (mChooseModelLayout != null) {
             mChooseModelLayout.removeAllViews();
         }
-        String cacheModel = readModelCache();
-        Drawable checkedDrawable = getResources().getDrawable(R.drawable.icon_checked);
-        for (final String modelStr : mThemeModelStrs) {
-            if (StringUtil.isNullOrEmpty(modelStr)) {
-                continue;
-            }
-            final View childView = mInflater.inflate(R.layout.item_settings_model, null);
-            TextView tv = (TextView) childView.findViewById(R.id.tv);
-            tv.setText(modelStr);
-            ImageView iv = (ImageView) childView.findViewById(R.id.iv);
-            iv.setImageDrawable(checkedDrawable);
-            iv.setVisibility(modelStr.equals(cacheModel) ? View.VISIBLE : View.INVISIBLE);
-            Constants.ThemeModel model;
-            switch (modelStr) {
-                case Constants.ThemeModelStrs.DAY:
-                    model = Constants.ThemeModel.DAY;
-                    break;
-                case Constants.ThemeModelStrs.NIGHT:
-                    model = Constants.ThemeModel.NIGHT;
-                    break;
-                case Constants.ThemeModelStrs.DOWN:
-                    model = Constants.ThemeModel.DOWN;
-                    break;
-                default:
-                    model = Constants.ThemeModel.DAY;
-                    break;
-            }
-            childView.setTag(model);
-            childView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mSettings.setModel((Constants.ThemeModel) view.getTag());
-                    buildModelCache(modelStr);
-                    refreshChooseModelLayout(modelStr);
-                    dismissPopupWindow();
-                }
-            });
-            mChooseModelLayout.addView(childView);
-            View divider = new View(this);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) Util.dp2px(1, this));
-            divider.setLayoutParams(params);
-            divider.setBackgroundColor(getResources().getColor(R.color.grey61));
-            mChooseModelLayout.addView(divider);
+        String cacheModelStr = readModelCache();
+        LogUtil.e(cacheModelStr);
+        ThemeModel cacheModel;
+        try {
+            cacheModel = (ThemeModel) JsonUtil.decode(cacheModelStr, ThemeModel.class);
+        }catch (Exception e) {
+            LogUtil.e("Exception here");
+            cacheModel = new ThemeModel(ThemeModel.ThemeType.DAY, Constants.ThemeModel4Show.DAY, Constants.ThemeModel4Show.DAY_EN);
         }
+        Drawable checkedDrawable = getResources().getDrawable(R.drawable.icon_checked);
+        if (flag == CHOOSE_MODEL) {
+            final boolean isCurZHLang = mLang.equals(Constants.Language.SIMPLED_CHINESE);
+            for (final ThemeModel model : mThemeModels) {
+                if (model == null) {
+                    continue;
+                }
+                final View childView = mInflater.inflate(R.layout.item_settings_model, null);
+                TextView tv = (TextView) childView.findViewById(R.id.tv);
+                tv.setText(mLang.equals(Constants.Language.SIMPLED_CHINESE) ? model.getThemeModel4Show() : model.getThemeModel4ShowEn());
+                ImageView iv = (ImageView) childView.findViewById(R.id.iv);
+                iv.setImageDrawable(checkedDrawable);
+                iv.setVisibility(cacheModel.equals(model) ? View.VISIBLE : View.INVISIBLE);
+                childView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mSettings.setModel(model);
+                        buildModelCache(model);
+                        refreshChooseLayout(isCurZHLang ? model.getThemeModel4Show() : model.getThemeModel4ShowEn());
+                        dismissPopupWindow();
+                    }
+                });
+                mChooseModelLayout.addView(childView);
+                View divider = new View(this);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) Util.dp2px(1, this));
+                divider.setLayoutParams(params);
+                divider.setBackgroundColor(getResources().getColor(R.color.grey61));
+                mChooseModelLayout.addView(divider);
+            }
+        }else if (flag == CHOOSE_LANG) {
+            for (final Language lang : mLangs) {
+                if (mLangs == null) {
+                    continue;
+                }
+                final View childView = mInflater.inflate(R.layout.item_settings_model, null);
+                TextView tv = (TextView) childView.findViewById(R.id.tv);
+                tv.setText(lang.getLang4Show());
+                ImageView iv = (ImageView) childView.findViewById(R.id.iv);
+                iv.setImageDrawable(checkedDrawable);
+                iv.setVisibility(mLang.equals(lang.getLang()) ? View.VISIBLE : View.INVISIBLE);
+                childView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        switchLanguage(lang.getLang());
+                        refreshChooseLayout(lang.getLang4Show());
+                        //更新语言后，destroy当前页面，重新绘制
+                        finish();
+                        Intent intent = new Intent(SettingsActivity.this, WelcomActivity.class);
+                        startActivity(intent);
+                        dismissPopupWindow();
+                    }
+                });
+                mChooseModelLayout.addView(childView);
+                View divider = new View(this);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) Util.dp2px(1, this));
+                divider.setLayoutParams(params);
+                divider.setBackgroundColor(getResources().getColor(R.color.grey61));
+                mChooseModelLayout.addView(divider);
+            }
+        }
+
         mPopupWindow = DialogUtil.createPopupWindowWithCustomView(mDecorView, (View) mChooseModelLayout.getParent());
     }
+
 
     private void dismissPopupWindow() {
         if (mPopupWindow != null && mPopupWindow.isShowing()) {
@@ -164,8 +222,8 @@ public class SettingsActivity extends BaseActivity {
         }
     }
 
-    private void refreshChooseModelLayout(String chooseedModelStr) {
-        if (mChooseModelLayout == null || StringUtil.isNullOrEmpty(chooseedModelStr)) {
+    private void refreshChooseLayout(String chooseedStr) {
+        if (mChooseModelLayout == null || StringUtil.isNullOrEmpty(chooseedStr)) {
             return;
         }
         int childCount = mChooseModelLayout.getChildCount();
@@ -177,7 +235,7 @@ public class SettingsActivity extends BaseActivity {
             try {
                 TextView tv = (TextView) childView.findViewById(R.id.tv);
                 ImageView iv = (ImageView)childView.findViewById(R.id.iv);
-                if (chooseedModelStr.equals(tv.getText().toString())) {
+                if (chooseedStr.equals(tv.getText().toString())) {
                     iv.setVisibility(View.VISIBLE);
                 }else {
                     iv.setVisibility(View.INVISIBLE);
@@ -193,15 +251,15 @@ public class SettingsActivity extends BaseActivity {
      * @return
      */
     private String readModelCache() {
-        return SharedPreferenceUtil.getSharedPreferences(MODEL_PROPERTIES, Constants.ThemeModelStrs.DAY, this);
+        return SharedPreferenceUtil.getSharedPreferences(MODEL_PROPERTIES, Constants.ThemeModel4Show.DAY, this);
     }
 
     /**
      * 存储模式到本地缓存
      * @param model
      */
-    private void buildModelCache(String model) {
-        SharedPreferenceUtil.setSharedPreferences(MODEL_PROPERTIES, model, this);
+    private void buildModelCache(ThemeModel model) {
+        SharedPreferenceUtil.setSharedPreferences(MODEL_PROPERTIES, JsonUtil.encode(model), this);
     }
 
 }

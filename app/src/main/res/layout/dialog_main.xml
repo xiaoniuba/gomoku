@@ -4,14 +4,14 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:padding="15dp"
-    android:background="@color/white">
+    android:background="@drawable/bg_popupwindow">
     <TextView
-        android:text="msg"
         android:id="@+id/tv_msg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:gravity="center"
+        android:textColor="@color/Gray"
         android:padding="20dp"/>
 
     <LinearLayout
@@ -20,23 +20,23 @@
         android:layout_height="wrap_content">
         <TextView
             android:id="@+id/bt_1"
-            android:text="btn1"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:gravity="center"
-            android:background="@color/dark_blue"/>
+            android:textColor="@color/Gray"
+            android:background="@drawable/bg_text_rose"/>
         <TextView
             android:id="@+id/bt_2"
-            android:text="btn1"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:layout_marginLeft="10dp"
             android:gravity="center"
-            android:background="@color/dark_green"/>
+            android:textColor="@color/Gray"
+            android:background="@drawable/bg_text_darkseagreen"/>
     </LinearLayout>
 
 </RelativeLayout>
