@@ -104,11 +104,13 @@ public class GameActivity extends BaseActivity implements PannelView.OnGameOverL
 
     @Override
     public void onGameOver(boolean isWhiteWin) {
-        DialogUtil.createDialog(this, mDecorView, isWhiteWin ? getString(R.string.white_win) :getString(R.string.black_win),
+        DialogUtil.createDialog(mDecorView, isWhiteWin ? getString(R.string.white_win) :getString(R.string.black_win),
                 "", getString(R.string.restart), null, new Runnable() {
                     @Override
                     public void run() {
-                        mPannelView.restart();
+                        if (mPannelView != null) {
+                            mPannelView.restart();
+                        }
                     }
                 });
     }

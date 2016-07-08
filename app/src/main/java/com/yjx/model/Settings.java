@@ -6,13 +6,13 @@ import com.yjx.utils.Constants;
  * Created by yangjinxiao on 2016/7/8.
  */
 public class Settings {
-    private Constants.ThemeModel model = null;
+    private ThemeModel model = null;
 
-    public Constants.ThemeModel getModel() {
+    public ThemeModel getModel() {
         return model;
     }
 
-    public void setModel(Constants.ThemeModel model) {
+    public void setModel(ThemeModel model) {
         this.model = model;
     }
 }

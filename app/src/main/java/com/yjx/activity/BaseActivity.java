@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.yjx.utils.Constants;
+import com.yjx.utils.DialogUtil;
 import com.yjx.utils.LogUtil;
 import com.yjx.utils.SharedPreferenceUtil;
 import com.yjx.wuziqi.R;
@@ -32,11 +33,12 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     protected Context that;
     protected View mDecorView;
     protected LayoutInflater mInflater;
-    protected String mLang;
+    protected String mLang;//当前的语言环境
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DialogUtil.init(this);
         that = this;
         mDecorView = getWindow().getDecorView();
         mInflater = LayoutInflater.from(this);

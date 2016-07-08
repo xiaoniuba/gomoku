@@ -1,6 +1,7 @@
 package com.yjx.activity;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -18,6 +19,7 @@ import com.yjx.com.yjx.adapter.SettingsAdapter;
 import com.yjx.model.Language;
 import com.yjx.model.Settings;
 import com.yjx.model.SettingsItem;
+import com.yjx.model.ThemeModel;
 import com.yjx.utils.Constants;
 import com.yjx.utils.DialogUtil;
 import com.yjx.utils.JsonUtil;
@@ -27,6 +29,7 @@ import com.yjx.utils.StringUtil;
 import com.yjx.utils.Util;
 import com.yjx.wuziqi.R;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +52,9 @@ public class SettingsActivity extends BaseActivity {
     private LayoutInflater mInflater;
     private Settings mSettings = new Settings();
     private String[] mThemeModelStrs =
-            {Constants.ThemeModelStrs.DAY, Constants.ThemeModelStrs.NIGHT, Constants.ThemeModelStrs.DOWN,};
+            {Constants.ThemeModel4Show.DAY, Constants.ThemeModel4Show.NIGHT, Constants.ThemeModel4Show.DOWN,};
     private List<Language> mLangs;
+    private List<ThemeModel> mThemeModels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +75,14 @@ public class SettingsActivity extends BaseActivity {
         Language zh = new Language(Constants.Language.SIMPLED_CHINESE, Constants.Language4Show.SIMPLED_CHINESE);
         mLangs.add(en);
         mLangs.add(zh);
+
+        mThemeModels = new ArrayList<>();
+        ThemeModel day = new ThemeModel(ThemeModel.ThemeType.DAY, Constants.ThemeModel4Show.DAY, Constants.ThemeModel4Show.DAY_EN);
+        ThemeModel night = new ThemeModel(ThemeModel.ThemeType.NIGHT, Constants.ThemeModel4Show.NIGHT, Constants.ThemeModel4Show.NIGHT_EN);
+        ThemeModel down = new ThemeModel(ThemeModel.ThemeType.DOWN, Constants.ThemeModel4Show.DOWN, Constants.ThemeModel4Show.DOWN_EN);
+        mThemeModels.add(day);
+        mThemeModels.add(night);
+        mThemeModels.add(down);
     }
 
     private void initList() {
@@ -130,41 +142,34 @@ public class SettingsActivity extends BaseActivity {
         if (mChooseModelLayout != null) {
             mChooseModelLayout.removeAllViews();
         }
-        String cacheModel = readModelCache();
+        String cacheModelStr = readModelCache();
+        LogUtil.e(cacheModelStr);
+        ThemeModel cacheModel;
+        try {
+            cacheModel = (ThemeModel) JsonUtil.decode(cacheModelStr, ThemeModel.class);
+        }catch (Exception e) {
+            LogUtil.e("Exception here");
+            cacheModel = new ThemeModel(ThemeModel.ThemeType.DAY, Constants.ThemeModel4Show.DAY, Constants.ThemeModel4Show.DAY_EN);
+        }
         Drawable checkedDrawable = getResources().getDrawable(R.drawable.icon_checked);
         if (flag == CHOOSE_MODEL) {
-            for (final String modelStr : mThemeModelStrs) {
-                if (StringUtil.isNullOrEmpty(modelStr)) {
+            final boolean isCurZHLang = mLang.equals(Constants.Language.SIMPLED_CHINESE);
+            for (final ThemeModel model : mThemeModels) {
+                if (model == null) {
                     continue;
                 }
                 final View childView = mInflater.inflate(R.layout.item_settings_model, null);
                 TextView tv = (TextView) childView.findViewById(R.id.tv);
-                tv.setText(modelStr);
+                tv.setText(mLang.equals(Constants.Language.SIMPLED_CHINESE) ? model.getThemeModel4Show() : model.getThemeModel4ShowEn());
                 ImageView iv = (ImageView) childView.findViewById(R.id.iv);
                 iv.setImageDrawable(checkedDrawable);
-                iv.setVisibility(modelStr.equals(cacheModel) ? View.VISIBLE : View.INVISIBLE);
-                Constants.ThemeModel model;
-                switch (modelStr) {
-                    case Constants.ThemeModelStrs.DAY:
-                        model = Constants.ThemeModel.DAY;
-                        break;
-                    case Constants.ThemeModelStrs.NIGHT:
-                        model = Constants.ThemeModel.NIGHT;
-                        break;
-                    case Constants.ThemeModelStrs.DOWN:
-                        model = Constants.ThemeModel.DOWN;
-                        break;
-                    default:
-                        model = Constants.ThemeModel.DAY;
-                        break;
-                }
-                childView.setTag(model);
+                iv.setVisibility(cacheModel.equals(model) ? View.VISIBLE : View.INVISIBLE);
                 childView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mSettings.setModel((Constants.ThemeModel) view.getTag());
-                        buildModelCache(modelStr);
-                        refreshChooseLayout(modelStr);
+                        mSettings.setModel(model);
+                        buildModelCache(model);
+                        refreshChooseLayout(isCurZHLang ? model.getThemeModel4Show() : model.getThemeModel4ShowEn());
                         dismissPopupWindow();
                     }
                 });
@@ -246,15 +251,15 @@ public class SettingsActivity extends BaseActivity {
      * @return
      */
     private String readModelCache() {
-        return SharedPreferenceUtil.getSharedPreferences(MODEL_PROPERTIES, Constants.ThemeModelStrs.DAY, this);
+        return SharedPreferenceUtil.getSharedPreferences(MODEL_PROPERTIES, Constants.ThemeModel4Show.DAY, this);
     }
 
     /**
      * 存储模式到本地缓存
      * @param model
      */
-    private void buildModelCache(String model) {
-        SharedPreferenceUtil.setSharedPreferences(MODEL_PROPERTIES, model, this);
+    private void buildModelCache(ThemeModel model) {
+        SharedPreferenceUtil.setSharedPreferences(MODEL_PROPERTIES, JsonUtil.encode(model), this);
     }
 
 }
