@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Ivory">
+
+    <TextView
+        android:id="@+id/tv_go_login"
+        android:text="login play"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@color/white"
+        android:visibility="gone"/>
+
+    <com.yjx.customview.PannelView
+        android:id="@+id/v_pannel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        />
+
+    <ImageView
+        android:id="@+id/iv_which_turn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignBottom="@+id/ll_order"
+        android:layout_marginLeft="15dp"/>
+
+    <LinearLayout
+        android:id="@+id/ll_order"
+        android:layout_toRightOf="@+id/iv_which_turn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="15dp"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:background="@drawable/bg_text"
+            android:text="New Game"
+            android:id="@+id/tv_new_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textColor="@color/Gray"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:background="@drawable/bg_text"
+            android:text="Regret Last Step"
+            android:id="@+id/tv_regret"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textColor="@color/Gray"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:background="@drawable/bg_text"
+            android:text="Settings"
+            android:id="@+id/tv_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textColor="@color/Gray"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

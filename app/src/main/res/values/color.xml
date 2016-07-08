@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="transperant">#00000000</color>
+    <color name="half_transperant">#33000000</color>
+
     <color name="dark_blue">#456789</color>
     <color name="dark_green">#444819</color>
     <color name="white">#ffffff</color>
     <color name="orange_3">#DCE516</color>
     <color name="coffee">#93926C</color>
+    <color name="DarkSeaGreen3">#9BCD9B</color>
+    <color name="WhiteSmoke">#F5F5F5</color>
+    <color name="Snow4">#8B8989</color>
+    <color name="Gray">#4F4F4F</color>
+    <color name="LightGreen">#90EE90</color>
+    <color name="Ivory">#FFFFF0</color>
+    <color name="FloralWhite">#FFFAF0</color>
+    <color name="LawnGreen">#7CFC00</color>
+    <color name="grey61">#9C9C9C</color>
+    <color name="Cornsilk1">#FFF8DC</color>
+    <color name="Honeydew1">#F0FFF0</color>
+
 </resources>

@@ -11,4 +11,14 @@ public class Constants {
     public interface SharedPreferenceConstant {
         String PREFERENCE_NAME = "GomokuApp";
     }
+
+    public enum ThemeModel {
+        DAY, NIGHT, DOWN;
+    }
+
+    public interface ThemeModelStrs {
+        String DAY = "日间模式";
+        String NIGHT = "夜间模式";
+        String DOWN = "傍晚模式";
+    }
 }

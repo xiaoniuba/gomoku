@@ -31,7 +31,7 @@ public class LoginActivity extends BaseActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         readUserLocal();
-        setContentView(R.layout.login_activity);
+        setContentView(R.layout.activity_login);
         mUserNameEdit = (EditText) findViewById(R.id.et_user_name);
         mUserPasswordEdit = (EditText) findViewById(R.id.et_user_password);
         mRegisterText = (TextView) findViewById(R.id.tv_register);
@@ -78,7 +78,7 @@ public class LoginActivity extends BaseActivity{
      * 跳转到游戏首页
      */
     private void jumpGameMainAct() {
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        Intent intent = new Intent(LoginActivity.this, GameActivity.class);
         startActivity(intent);
     }
 

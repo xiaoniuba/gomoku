@@ -8,6 +8,9 @@ import com.google.gson.Gson;
 public class JsonUtil {
     private static final Gson mGson = new Gson();
     public static String encode(Object o) {
+        if (o == null) {
+            return "";
+        }
         return mGson.toJson(o);
     }
     public static final Object decode(String jsonStr, Class clazz) {
