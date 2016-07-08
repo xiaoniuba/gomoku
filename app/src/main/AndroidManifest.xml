@@ -10,7 +10,8 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
         <activity
-            android:name="com.yjx.activity.WelcomActivity">
+            android:name="com.yjx.activity.WelcomActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">五子棋</string>
+    <string name="action_settings">Settings</string>
+    <string name="restart">再玩一局</string>
+    <string name="renew_game">重新开始</string>
+    <string name="white_win">白方胜！</string>
+    <string name="black_win">黑方胜！</string>
+    <string name="begin_game">开始游戏</string>
+    <string name="new_game">新局</string>
+    <string name="regret">悔棋</string>
+    <string name="done">完成</string>
+    <string name="model">模式</string>
+    <string name="multilang">多语言</string>
+    <string name="about">关于</string>
+</resources>

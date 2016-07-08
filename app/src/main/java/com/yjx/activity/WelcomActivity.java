@@ -67,4 +67,11 @@ public class WelcomActivity extends BaseActivity {
         startActivityForResult(intent, REQUEST4SETTINGS);
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        finish();
+        Intent intent1 = new Intent(WelcomActivity.this, WelcomActivity.class);
+        startActivity(intent1);
+    }
 }

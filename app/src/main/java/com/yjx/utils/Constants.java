@@ -21,4 +21,14 @@ public class Constants {
         String NIGHT = "夜间模式";
         String DOWN = "傍晚模式";
     }
+
+    public interface Language4Show {
+        String ENGLISH = "English";
+        String SIMPLED_CHINESE = "简体中文";
+    }
+
+    public interface Language {
+        String ENGLISH = "english";
+        String SIMPLED_CHINESE = "simple_chinese";
+    }
 }
