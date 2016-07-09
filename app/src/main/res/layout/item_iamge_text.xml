@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:padding="15dp"
         android:gravity="center_vertical"
-        android:textColor="@color/Gray"
+        android:textColor="?attr/txtColor"
         android:textSize="@dimen/text_big"/>
 
 </LinearLayout>

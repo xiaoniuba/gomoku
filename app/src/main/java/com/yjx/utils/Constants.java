@@ -10,16 +10,7 @@ public class Constants {
 
     public interface SharedPreferenceConstant {
         String PREFERENCE_NAME = "GomokuApp";
-    }
-
-    public interface ThemeModel4Show {
-        String DAY = "日间模式";
-        String NIGHT = "夜间模式";
-        String DOWN = "傍晚模式";
-
-        String DAY_EN = "Day model";
-        String NIGHT_EN = "Night model";
-        String DOWN_EN = "Down model";
+        String PROPERTY_THEME = "propertiy_theme";
     }
 
     public interface Language4Show {

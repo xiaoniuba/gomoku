@@ -8,8 +8,9 @@
     <string name="begin_game">Start the Game</string>
     <string name="new_game">New Game</string>
     <string name="regret">Regret Last Step</string>
-    <string name="done">Completed</string>
+    <string name="done">Done</string>
     <string name="model">Model</string>
     <string name="multilang">MultiLanguage</string>
     <string name="about">Refrence</string>
+    <string name="settings">Settings</string>
 </resources>

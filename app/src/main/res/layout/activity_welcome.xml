@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Ivory">
+    android:background="?attr/appBg">
 
     <LinearLayout
         android:id="@+id/ll_images"
@@ -46,8 +46,7 @@
         android:layout_marginTop="100dp"
         android:background="@drawable/bg_text"
         android:text="@string/begin_game"
-        android:textColor="@color/Gray"
-        android:textSize="@dimen/text_bigger" />
+        style="@style/txtStyle_normal" />
 
     <LinearLayout
         android:id="@+id/ll_bottom"

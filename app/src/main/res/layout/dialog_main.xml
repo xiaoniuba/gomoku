@@ -24,6 +24,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:padding="10dp"
+            android:layout_marginRight="10dp"
             android:gravity="center"
             android:textColor="@color/Gray"
             android:background="@drawable/bg_text_rose"/>
@@ -33,7 +34,6 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:layout_marginLeft="10dp"
             android:gravity="center"
             android:textColor="@color/Gray"
             android:background="@drawable/bg_text_darkseagreen"/>

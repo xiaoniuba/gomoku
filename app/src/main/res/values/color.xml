@@ -2,6 +2,7 @@
 <resources>
     <color name="transperant">#00000000</color>
     <color name="half_transperant">#33000000</color>
+    <color name="black">#000000</color>
 
     <color name="dark_blue">#456789</color>
     <color name="dark_green">#444819</color>
@@ -21,5 +22,16 @@
     <color name="Honeydew1">#F0FFF0</color>
     <color name="MistyRose">#FFE4E1</color>
     <color name="DarkSeaGreen1">#C1FFC1</color>
+    <color name="Honeydew4">#838B83</color>
+    <color name="Ivory3">#CDCDC1</color>
+    <color name="PeachPuff2">#EECBAD</color>
+    <color name="Seashell1">#FFF5EE</color>
+    <color name="LightCyan4">#7A8B8B</color>
+    <color name="DimGrey">#696969</color>
+    <color name="NavajoWhite2">#EECFA1</color>
+    <color name="Plum2">#EEAEEE</color>
+    <color name="DarkSlateGray">#2F4F4F</color>
+    <color name="Grey">#BEBEBE</color>
+    <color name="LightGray">#D3D3D3</color>
 
 </resources>

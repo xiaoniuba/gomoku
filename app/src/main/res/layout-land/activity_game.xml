@@ -36,8 +36,8 @@
         android:layout_toRightOf="@+id/v_pannel"
         android:layout_marginTop="20dp"
         android:padding="10dp"
-        android:textColor="@color/Gray"
-        android:layout_marginRight="10dp"/>
+        android:layout_marginRight="10dp"
+        style="@style/txtStyle_normal"/>
 
     <TextView
         android:background="@drawable/bg_text"
@@ -49,7 +49,8 @@
         android:layout_below="@+id/tv_new_game"
         android:layout_marginTop="20dp"
         android:padding="10dp"
-        android:textColor="@color/Gray"
-        android:layout_marginRight="10dp"/>
+        android:layout_marginRight="10dp"
+        style="@style/txtStyle_normal"
+        />
 
 </RelativeLayout>
