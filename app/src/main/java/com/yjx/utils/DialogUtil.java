@@ -23,6 +23,9 @@ import com.yjx.wuziqi.R;
 public class DialogUtil {
     private static PopupWindow mPopupWindow;
     private static Context mContext = null;
+    public enum DialogType {
+        ONE_BTN, TWO_BTN
+    }
     private static LayoutInflater mInflater = null;
     public static void init(Context context) {
         mContext = context;

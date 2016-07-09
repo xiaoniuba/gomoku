@@ -12,4 +12,5 @@
     <string name="model">模式</string>
     <string name="multilang">多语言</string>
     <string name="about">关于</string>
+    <string name="settings">设置</string>
 </resources>

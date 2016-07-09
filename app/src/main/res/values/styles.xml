@@ -9,4 +9,43 @@
         <item name="android:windowEnterAnimation">@anim/slide_in_from_bottom</item>
         <item name="android:windowExitAnimation">@anim/slide_out_to_bottom</item>
     </style>
+
+    <!-- 自定义属性-->
+    <attr name="appBg" format="reference" />
+    <attr name="txtBg" format="reference" />
+    <attr name="btnBg" format="reference" />
+    <attr name="txtColor" format="reference" />
+    <attr name="txtBgStroke" format="reference" />
+    <attr name="titleBg" format="reference" />
+
+    <!-- 白天主题-->
+    <style name="DayTheme" parent="Theme.AppCompat">
+        <item name="appBg">@color/Ivory</item>
+        <item name="txtColor">@color/Gray</item>
+        <item name="txtBg">@color/Honeydew1</item>
+        <item name="txtBgStroke">@color/LightGreen</item>
+    </style>
+
+    <!-- 夜间主题-->
+    <style name="NightTheme" parent="Theme.AppCompat">
+        <item name="appBg">@color/DarkSlateGray</item>
+        <item name="txtColor">@color/Ivory3</item>
+        <item name="txtBg">@color/Grey</item>
+        <item name="txtBgStroke">@color/black</item>
+    </style>
+
+    <!-- 紫色魅惑主题-->
+    <style name="SexyTheme" parent="Theme.AppCompat">
+        <item name="appBg">@color/Plum2</item>
+        <item name="txtColor">@color/Gray</item>
+        <item name="txtBg">@color/NavajoWhite2</item>
+        <item name="txtBgStroke">@color/LightGreen</item>
+    </style>
+
+    <!-- 普通文案样式-->
+    <style name="txtStyle_normal">
+        <item name="android:textColor">?attr/txtColor</item>
+        <item name="android:textSize">@dimen/text_normal</item>
+        <item name="android:gravity">center</item>
+    </style>
 </resources>

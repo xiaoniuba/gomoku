@@ -18,7 +18,8 @@
         android:layout_height="match_parent"
         android:textColor="@color/Ivory"
         android:layout_centerInParent="true"
-        android:gravity="center_vertical"/>
+        android:gravity="center_vertical"
+        android:textSize="@dimen/text_big"/>
 
     <TextView
         android:id="@+id/tv_right_function"

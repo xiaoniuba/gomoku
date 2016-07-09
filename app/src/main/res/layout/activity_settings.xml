@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Ivory"
+    android:background="?attr/appBg"
     android:id="@+id/ll_main">
 
     <include layout="@layout/layout_header"/>

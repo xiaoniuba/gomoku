@@ -21,7 +21,6 @@ public class WelcomActivity extends BaseActivity {
 
     private TextView mBeginGameText;
     private ImageView mSettingsImage;
-    private Settings mSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +52,6 @@ public class WelcomActivity extends BaseActivity {
         Intent intent = new Intent();
         intent.setClass(this, GameActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(SETTINGS, JsonUtil.encode(mSettings));
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -62,15 +60,20 @@ public class WelcomActivity extends BaseActivity {
         Intent intent = new Intent();
         intent.setClass(this, SettingsActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(SETTINGS, JsonUtil.encode(mSettings));
         intent.putExtras(bundle);
         startActivityForResult(intent, REQUEST4SETTINGS);
     }
 
+    /**
+     * WelcomeActivity的启动模式是SingleTask,
+     * 当从别的Activity中启动WelcomeActivity时会把Task Stack中WelcomeActivity之上的所有Activity销毁掉，
+     * 并回调WelcomeActivity的onNewIntent()方法
+     * @param intent
+     */
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        finish();
+        finish();//销毁WelcomeActivity，重新创建，就会读取本地保存的语言和主题信息
         Intent intent1 = new Intent(WelcomActivity.this, WelcomActivity.class);
         startActivity(intent1);
     }

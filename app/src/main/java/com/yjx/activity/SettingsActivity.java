@@ -1,13 +1,10 @@
 package com.yjx.activity;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -29,7 +26,6 @@ import com.yjx.utils.StringUtil;
 import com.yjx.utils.Util;
 import com.yjx.wuziqi.R;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +38,6 @@ public class SettingsActivity extends BaseActivity {
     private static final int CHOOSE_MODEL = 1;
     private static final int CHOOSE_LANG = 2;
     public static final int RESULT_CODE_DONE = 1;
-    public static final String MODEL_PROPERTIES = "model_properties";
 
     private ListView mListVeiw;
     private SettingsAdapter mAdapter;
@@ -51,39 +46,20 @@ public class SettingsActivity extends BaseActivity {
     private PopupWindow mPopupWindow;
     private LayoutInflater mInflater;
     private Settings mSettings = new Settings();
-    private String[] mThemeModelStrs =
-            {Constants.ThemeModel4Show.DAY, Constants.ThemeModel4Show.NIGHT, Constants.ThemeModel4Show.DOWN,};
-    private List<Language> mLangs;
-    private List<ThemeModel> mThemeModels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        initData();
         mInflater = LayoutInflater.from(this);
         initList();
         mDoneText = (TextView) findViewById(R.id.tv_right_function);
         mDoneText.setText(getString(R.string.done));
+        ((TextView)findViewById(R.id.tv_title)).setText(getString(R.string.settings));
         View view = findViewById(R.id.iv_back);
         setOnclickListener(mDoneText, view);
     }
 
-    private void initData() {
-        mLangs = new ArrayList<>();
-        Language en = new Language(Constants.Language.ENGLISH, Constants.Language4Show.ENGLISH);
-        Language zh = new Language(Constants.Language.SIMPLED_CHINESE, Constants.Language4Show.SIMPLED_CHINESE);
-        mLangs.add(en);
-        mLangs.add(zh);
-
-        mThemeModels = new ArrayList<>();
-        ThemeModel day = new ThemeModel(ThemeModel.ThemeType.DAY, Constants.ThemeModel4Show.DAY, Constants.ThemeModel4Show.DAY_EN);
-        ThemeModel night = new ThemeModel(ThemeModel.ThemeType.NIGHT, Constants.ThemeModel4Show.NIGHT, Constants.ThemeModel4Show.NIGHT_EN);
-        ThemeModel down = new ThemeModel(ThemeModel.ThemeType.DOWN, Constants.ThemeModel4Show.DOWN, Constants.ThemeModel4Show.DOWN_EN);
-        mThemeModels.add(day);
-        mThemeModels.add(night);
-        mThemeModels.add(down);
-    }
 
     private void initList() {
         mListVeiw = (ListView) findViewById(R.id.lv);
@@ -93,7 +69,7 @@ public class SettingsActivity extends BaseActivity {
             public void onItemClick(View convertView, String contentStr) {
                 if (getString(R.string.model).equals(contentStr)) {
                     showChooseWindow(CHOOSE_MODEL);
-                }else if (getString(R.string.multilang).equals(contentStr)) {
+                } else if (getString(R.string.multilang).equals(contentStr)) {
                     showChooseWindow(CHOOSE_LANG);
                 }
             }
@@ -142,35 +118,40 @@ public class SettingsActivity extends BaseActivity {
         if (mChooseModelLayout != null) {
             mChooseModelLayout.removeAllViews();
         }
-        String cacheModelStr = readModelCache();
-        LogUtil.e(cacheModelStr);
-        ThemeModel cacheModel;
-        try {
-            cacheModel = (ThemeModel) JsonUtil.decode(cacheModelStr, ThemeModel.class);
-        }catch (Exception e) {
-            LogUtil.e("Exception here");
-            cacheModel = new ThemeModel(ThemeModel.ThemeType.DAY, Constants.ThemeModel4Show.DAY, Constants.ThemeModel4Show.DAY_EN);
-        }
+        final ThemeModel cacheTheme = mTheme;
         Drawable checkedDrawable = getResources().getDrawable(R.drawable.icon_checked);
         if (flag == CHOOSE_MODEL) {
-            final boolean isCurZHLang = mLang.equals(Constants.Language.SIMPLED_CHINESE);
-            for (final ThemeModel model : mThemeModels) {
-                if (model == null) {
+            List<ThemeModel> allThemes = ThemeModel.ALL_THEMES;
+            if (allThemes == null) {
+                return;
+            }
+            final boolean isCurZHLang = mLang.getType().equals(Language.Type.SIMPLED_CHINESE);
+            for (final ThemeModel theme : allThemes) {
+                if (theme == null) {
                     continue;
                 }
                 final View childView = mInflater.inflate(R.layout.item_settings_model, null);
                 TextView tv = (TextView) childView.findViewById(R.id.tv);
-                tv.setText(mLang.equals(Constants.Language.SIMPLED_CHINESE) ? model.getThemeModel4Show() : model.getThemeModel4ShowEn());
+                tv.setText(isCurZHLang ? theme.getType4Show() : theme.getType4ShowEn());
                 ImageView iv = (ImageView) childView.findViewById(R.id.iv);
                 iv.setImageDrawable(checkedDrawable);
-                iv.setVisibility(cacheModel.equals(model) ? View.VISIBLE : View.INVISIBLE);
+                iv.setVisibility(cacheTheme.equals(theme) ? View.VISIBLE : View.INVISIBLE);
                 childView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mSettings.setModel(model);
-                        buildModelCache(model);
-                        refreshChooseLayout(isCurZHLang ? model.getThemeModel4Show() : model.getThemeModel4ShowEn());
                         dismissPopupWindow();
+                        if (theme.equals(cacheTheme)) {
+                            return;
+                        }
+                        mSettings.setModel(theme);
+                        buildCacheTheme(theme);
+                        refreshChooseLayout(isCurZHLang ? theme.getType4Show() : theme.getType4ShowEn());
+
+                        //更新主题后，destroy当前页面，重新绘制
+                        finish();
+                        Intent intent = new Intent(SettingsActivity.this, WelcomActivity.class);
+                        startActivity(intent);
+
                     }
                 });
                 mChooseModelLayout.addView(childView);
@@ -181,26 +162,34 @@ public class SettingsActivity extends BaseActivity {
                 mChooseModelLayout.addView(divider);
             }
         }else if (flag == CHOOSE_LANG) {
-            for (final Language lang : mLangs) {
-                if (mLangs == null) {
+            List<Language> allLangs = Language.ALL_LANGS;
+            if (allLangs == null || allLangs.isEmpty()) {
+                return;
+            }
+            final Language cacheLang = mLang;
+            for (final Language lang : allLangs) {
+                if (lang == null) {
                     continue;
                 }
                 final View childView = mInflater.inflate(R.layout.item_settings_model, null);
                 TextView tv = (TextView) childView.findViewById(R.id.tv);
-                tv.setText(lang.getLang4Show());
+                tv.setText(lang.getType4Show());
                 ImageView iv = (ImageView) childView.findViewById(R.id.iv);
                 iv.setImageDrawable(checkedDrawable);
-                iv.setVisibility(mLang.equals(lang.getLang()) ? View.VISIBLE : View.INVISIBLE);
+                iv.setVisibility(cacheLang.equals(lang) ? View.VISIBLE : View.INVISIBLE);
                 childView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        switchLanguage(lang.getLang());
-                        refreshChooseLayout(lang.getLang4Show());
+                        dismissPopupWindow();
+                        if (lang.equals(cacheLang)) {
+                            return;
+                        }
+                        switchLanguage(lang);
+                        refreshChooseLayout(lang.getType4Show());
                         //更新语言后，destroy当前页面，重新绘制
                         finish();
                         Intent intent = new Intent(SettingsActivity.this, WelcomActivity.class);
                         startActivity(intent);
-                        dismissPopupWindow();
                     }
                 });
                 mChooseModelLayout.addView(childView);
@@ -211,10 +200,8 @@ public class SettingsActivity extends BaseActivity {
                 mChooseModelLayout.addView(divider);
             }
         }
-
         mPopupWindow = DialogUtil.createPopupWindowWithCustomView(mDecorView, (View) mChooseModelLayout.getParent());
     }
-
 
     private void dismissPopupWindow() {
         if (mPopupWindow != null && mPopupWindow.isShowing()) {
@@ -247,19 +234,11 @@ public class SettingsActivity extends BaseActivity {
     }
 
     /**
-     * 读取本地缓存存储的模式
-     * @return
-     */
-    private String readModelCache() {
-        return SharedPreferenceUtil.getSharedPreferences(MODEL_PROPERTIES, Constants.ThemeModel4Show.DAY, this);
-    }
-
-    /**
      * 存储模式到本地缓存
      * @param model
      */
-    private void buildModelCache(ThemeModel model) {
-        SharedPreferenceUtil.setSharedPreferences(MODEL_PROPERTIES, JsonUtil.encode(model), this);
+    protected void buildCacheTheme(ThemeModel model) {
+        SharedPreferenceUtil.setSharedPreferences(Constants.SharedPreferenceConstant.PROPERTY_THEME, JsonUtil.encode(model), this);
     }
 
 }
