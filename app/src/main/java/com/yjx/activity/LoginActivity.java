@@ -25,11 +25,16 @@ public class LoginActivity extends BaseActivity{
     private EditText mUserPasswordEdit;
     private TextView mRegisterText;
     private TextView mLoginText;
-
     private User mUser;
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected int getContentLayout() {
+        return R.layout.activity_login;
+    }
+
+    @Override
+    protected void initContentView() {
+        super.initContentView();
         readUserLocal();
         setContentView(R.layout.activity_login);
         mUserNameEdit = (EditText) findViewById(R.id.et_user_name);
