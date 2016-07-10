@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.yjx.model.Piece;
 import com.yjx.utils.Constants;
+import com.yjx.utils.LogUtil;
 import com.yjx.utils.Util;
 import com.yjx.wuziqi.R;
 

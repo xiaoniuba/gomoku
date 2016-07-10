@@ -1,6 +1,7 @@
 package com.yjx.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -29,9 +30,10 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
 
     protected Context that;
     protected View mDecorView;
+    protected View mRootLayout;
     protected LayoutInflater mInflater;
     protected Language mLang;//当前的语言环境
-    protected ThemeModel mTheme;
+    protected ThemeModel mTheme;//当前的主题
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,26 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         mInflater = LayoutInflater.from(this);
         initLang();
         initTheme();
+        mRootLayout = mInflater.inflate(getContentLayout(), null);
+        setContentView(mRootLayout);
+        getIntentData();
+        initHeaderView();
+        initContentView();
+        initData();
+    }
+
+    protected abstract int getContentLayout();
+    protected void getIntentData() {
+
+    }
+    protected void initHeaderView() {
+
+    }
+    protected void initContentView() {
+
+    }
+    protected void initData() {
+
     }
 
     private void initTheme() {

@@ -23,9 +23,13 @@ public class WelcomActivity extends BaseActivity {
     private ImageView mSettingsImage;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome);
+    protected int getContentLayout() {
+        return R.layout.activity_welcome;
+    }
+
+    @Override
+    protected void initContentView() {
+        super.initContentView();
         mBeginGameText = (TextView) findViewById(R.id.tv_begin_game);
         mBeginGameText.setOnClickListener(this);
         mSettingsImage = (ImageView) findViewById(R.id.iv_settings);

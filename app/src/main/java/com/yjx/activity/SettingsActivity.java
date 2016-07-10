@@ -3,7 +3,6 @@ package com.yjx.activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,7 +19,6 @@ import com.yjx.model.ThemeModel;
 import com.yjx.utils.Constants;
 import com.yjx.utils.DialogUtil;
 import com.yjx.utils.JsonUtil;
-import com.yjx.utils.LogUtil;
 import com.yjx.utils.SharedPreferenceUtil;
 import com.yjx.utils.StringUtil;
 import com.yjx.utils.Util;
@@ -44,22 +42,26 @@ public class SettingsActivity extends BaseActivity {
     private TextView mDoneText;
     private LinearLayout mChooseModelLayout;
     private PopupWindow mPopupWindow;
-    private LayoutInflater mInflater;
     private Settings mSettings = new Settings();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
-        mInflater = LayoutInflater.from(this);
-        initList();
+    protected int getContentLayout() {
+        return R.layout.activity_settings;
+    }
+
+    @Override
+    protected void initHeaderView() {
         mDoneText = (TextView) findViewById(R.id.tv_right_function);
         mDoneText.setText(getString(R.string.done));
         ((TextView)findViewById(R.id.tv_title)).setText(getString(R.string.settings));
-        View view = findViewById(R.id.iv_back);
-        setOnclickListener(mDoneText, view);
+        View backView = findViewById(R.id.iv_back);
+        setOnclickListener(mDoneText, backView);
     }
 
+    @Override
+    protected void initContentView() {
+        initList();
+    }
 
     private void initList() {
         mListVeiw = (ListView) findViewById(R.id.lv);
