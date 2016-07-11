@@ -2,12 +2,14 @@ package com.yjx.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yjx.model.Settings;
 import com.yjx.utils.JsonUtil;
+import com.yjx.utils.ToastUtil;
 import com.yjx.wuziqi.R;
 
 /**
@@ -21,6 +23,9 @@ public class WelcomActivity extends BaseActivity {
 
     private TextView mBeginGameText;
     private ImageView mSettingsImage;
+
+    private long mLastPressBackTime;//上一次按下返回键的时间
+    private long mCurPressBackTime;//当前按下返回键的时间
 
     @Override
     protected int getContentLayout() {
@@ -80,5 +85,19 @@ public class WelcomActivity extends BaseActivity {
         finish();//销毁WelcomeActivity，重新创建，就会读取本地保存的语言和主题信息
         Intent intent1 = new Intent(WelcomActivity.this, WelcomActivity.class);
         startActivity(intent1);
+    }
+
+    @Override
+    public void onBackPressed() {
+        /**
+         * 实现再按一次退出功能
+         */
+        mCurPressBackTime = SystemClock.uptimeMillis();//这里使用SystemClock.uptimeMillis()防止System.currentTimeMillis()被修改
+        if (mCurPressBackTime - mLastPressBackTime > 2 * 1000) {
+            ToastUtil.makeToast(that, getString(R.string.click_again_quit));
+            mLastPressBackTime = SystemClock.uptimeMillis();
+        }else {
+            finish();
+        }
     }
 }

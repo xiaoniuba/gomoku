@@ -13,4 +13,5 @@
     <string name="multilang">多语言</string>
     <string name="about">关于</string>
     <string name="settings">设置</string>
+    <string name="click_again_quit">再按一次退出</string>
 </resources>
