@@ -1,6 +1,5 @@
 package com.yjx.activity;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -12,49 +11,47 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.yjx.utils.DialogUtil;
-
 import com.yjx.customview.PannelView;
+import com.yjx.utils.DialogUtil;
 import com.yjx.wuziqi.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class GameActivity extends BaseActivity implements PannelView.OnGameOverListener,
-                                                            PannelView.OnTurnChangedListener{
+        PannelView.OnTurnChangedListener {
+
     private static final String IS_CUR_WHITE_TURN = "is_cur_white_turn";
 
-    private PannelView mPannelView;
-    private TextView mGoLoginText;
-    private TextView mNewGameText;
-    private TextView mRegretText;
-    private TextView mSettingsText;
-    private ImageView mWhichTurnImage;
+    @BindView(R.id.v_pannel)
+    PannelView mPannelView;
+    @BindView(R.id.iv_which_turn)
+    ImageView mWhichTurnImage;
+    @BindView(R.id.tv_new_game)
+    TextView mNewGameText;
+    @BindView(R.id.tv_regret)
+    TextView mRegretText;
+
     private Bitmap mWhitePiece;
     private Bitmap mBlackPiece;
     private AnimationSet mAnimSet;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);
-        mGoLoginText = (TextView) findViewById(R.id.tv_go_login);
-        mGoLoginText.setOnClickListener(this);
-        mPannelView = (PannelView) findViewById(R.id.v_pannel);
+    protected int getContentLayout() {
+        return R.layout.activity_game;
+    }
+
+    @Override
+    protected void initContentView() {
+        super.initContentView();
         mPannelView.registerGameOverListner(this);
         mPannelView.registerTurnChangedListener(this);
-        mNewGameText = (TextView) findViewById(R.id.tv_new_game);
-        mNewGameText.setOnClickListener(this);
-        mRegretText = (TextView) findViewById(R.id.tv_regret);
-        mRegretText.setOnClickListener(this);
-        setOnclickListener(mGoLoginText, mNewGameText, mRegretText);
-        mWhichTurnImage = (ImageView) findViewById(R.id.iv_which_turn);
         mWhitePiece = BitmapFactory.decodeResource(getResources(), R.drawable.stone_w2);
         mBlackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.stone_b1);
         mWhichTurnImage.setImageBitmap(mWhitePiece);
-        if (savedInstanceState != null) {//Activity销毁时保存的当前轮到谁下子
-            boolean isCurWhiteTurn = savedInstanceState.getBoolean(IS_CUR_WHITE_TURN, true);
-            mWhichTurnImage.setImageBitmap(isCurWhiteTurn ? mWhitePiece : mBlackPiece);
-        }
         initAnim();
     }
 
@@ -75,9 +72,6 @@ public class GameActivity extends BaseActivity implements PannelView.OnGameOverL
         super.onClick(view);
         int id = view.getId();
         switch (id) {
-            case R.id.tv_go_login:
-                goLoginAct();
-                break;
             case R.id.tv_new_game:
                 if (mPannelView != null) {
                     mPannelView.restart();
@@ -93,14 +87,29 @@ public class GameActivity extends BaseActivity implements PannelView.OnGameOverL
         }
     }
 
-    private void goLoginAct() {
-        Intent intent = new Intent(GameActivity.this, LoginActivity.class);
-        startActivity(intent);
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {//Activity销毁时保存的当前轮到谁下子
+            boolean isCurWhiteTurn = savedInstanceState.getBoolean(IS_CUR_WHITE_TURN, true);
+            mWhichTurnImage.setImageBitmap(isCurWhiteTurn ? mWhitePiece : mBlackPiece);
+        }
+    }
+
+    /**
+     * Activity销毁时存储当前轮到谁下子
+     *
+     * @param outState
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(IS_CUR_WHITE_TURN, mPannelView.getIsCurWhiteTurn());
     }
 
     @Override
     public void onGameOver(boolean isWhiteWin) {
-        DialogUtil.createDialog(mDecorView, isWhiteWin ? getString(R.string.white_win) :getString(R.string.black_win),
+        DialogUtil.createDialog(mDecorView, isWhiteWin ? getString(R.string.white_win) : getString(R.string.black_win),
                 "", getString(R.string.restart), null, new Runnable() {
                     @Override
                     public void run() {
@@ -115,16 +124,6 @@ public class GameActivity extends BaseActivity implements PannelView.OnGameOverL
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
-    }
-
-    /**
-     * Activity销毁时存储当前轮到谁下子
-     * @param outState
-     */
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(IS_CUR_WHITE_TURN, mPannelView.getIsCurWhiteTurn());
     }
 
     @Override
@@ -146,4 +145,5 @@ public class GameActivity extends BaseActivity implements PannelView.OnGameOverL
         mWhichTurnImage.setImageBitmap(isWhiteTurn ? mWhitePiece : mBlackPiece);
         mWhichTurnImage.startAnimation(mAnimSet);
     }
+
 }

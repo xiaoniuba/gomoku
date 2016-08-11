@@ -1,4 +1,4 @@
-package com.yjx.com.yjx.adapter;
+package com.yjx.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,7 +12,6 @@ import com.yjx.model.SettingsItem;
 import com.yjx.wuziqi.R;
 
 import java.util.List;
-
 /**
  * Created by yangjinxiao on 2016/7/8.
  */

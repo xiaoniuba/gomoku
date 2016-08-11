@@ -11,7 +11,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.yjx.com.yjx.adapter.SettingsAdapter;
+import com.yjx.adapter.SettingsAdapter;
 import com.yjx.model.Language;
 import com.yjx.model.Settings;
 import com.yjx.model.SettingsItem;
@@ -27,6 +27,10 @@ import com.yjx.wuziqi.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * 设置页面
  * Created by yangjinxiao on 2016/7/8.
@@ -37,9 +41,12 @@ public class SettingsActivity extends BaseActivity {
     private static final int CHOOSE_LANG = 2;
     public static final int RESULT_CODE_DONE = 1;
 
-    private ListView mListVeiw;
+    @BindView(R.id.tv_right_function)
+    TextView mDoneText;
+    @BindView(R.id.lv)
+    ListView mListVeiw;
+
     private SettingsAdapter mAdapter;
-    private TextView mDoneText;
     private LinearLayout mChooseModelLayout;
     private PopupWindow mPopupWindow;
     private Settings mSettings = new Settings();
@@ -53,7 +60,7 @@ public class SettingsActivity extends BaseActivity {
     protected void initHeaderView() {
         mDoneText = (TextView) findViewById(R.id.tv_right_function);
         mDoneText.setText(getString(R.string.done));
-        ((TextView)findViewById(R.id.tv_title)).setText(getString(R.string.settings));
+        ((TextView) findViewById(R.id.tv_title)).setText(getString(R.string.settings));
         View backView = findViewById(R.id.iv_back);
         setOnclickListener(mDoneText, backView);
     }
@@ -73,6 +80,8 @@ public class SettingsActivity extends BaseActivity {
                     showChooseWindow(CHOOSE_MODEL);
                 } else if (getString(R.string.multilang).equals(contentStr)) {
                     showChooseWindow(CHOOSE_LANG);
+                } else if (getString(R.string.about).equals(contentStr)) {
+                    jumpAboutAct();
                 }
             }
         });
@@ -87,11 +96,16 @@ public class SettingsActivity extends BaseActivity {
         mListVeiw.setAdapter(mAdapter);
     }
 
+    private void jumpAboutAct() {
+        Intent intent = new Intent(SettingsActivity.this, AboutActiviy.class);
+        startActivity(intent);
+    }
+
     @Override
+
+    @OnClick({R.id.tv_right_function, R.id.iv_back})
     public void onClick(View view) {
-        super.onClick(view);
-        int id = view.getId();
-        switch (id) {
+        switch (view.getId()) {
             case R.id.tv_right_function:
                 backToWelcomAct();
                 break;
@@ -163,7 +177,7 @@ public class SettingsActivity extends BaseActivity {
                 divider.setBackgroundColor(getResources().getColor(R.color.grey61));
                 mChooseModelLayout.addView(divider);
             }
-        }else if (flag == CHOOSE_LANG) {
+        } else if (flag == CHOOSE_LANG) {
             List<Language> allLangs = Language.ALL_LANGS;
             if (allLangs == null || allLangs.isEmpty()) {
                 return;
@@ -223,13 +237,13 @@ public class SettingsActivity extends BaseActivity {
             }
             try {
                 TextView tv = (TextView) childView.findViewById(R.id.tv);
-                ImageView iv = (ImageView)childView.findViewById(R.id.iv);
+                ImageView iv = (ImageView) childView.findViewById(R.id.iv);
                 if (chooseedStr.equals(tv.getText().toString())) {
                     iv.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     iv.setVisibility(View.INVISIBLE);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 continue;
             }
         }
@@ -237,10 +251,10 @@ public class SettingsActivity extends BaseActivity {
 
     /**
      * 存储模式到本地缓存
+     *
      * @param model
      */
     protected void buildCacheTheme(ThemeModel model) {
         SharedPreferenceUtil.setSharedPreferences(Constants.SharedPreferenceConstant.PROPERTY_THEME, JsonUtil.encode(model), this);
     }
-
 }

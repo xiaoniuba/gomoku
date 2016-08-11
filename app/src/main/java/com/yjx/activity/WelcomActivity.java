@@ -5,12 +5,15 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.yjx.model.Settings;
-import com.yjx.utils.JsonUtil;
 import com.yjx.utils.ToastUtil;
 import com.yjx.wuziqi.R;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * 首页欢迎页面
@@ -21,8 +24,10 @@ public class WelcomActivity extends BaseActivity {
     public static final String SETTINGS = "settings";
     private static final int REQUEST4SETTINGS = 1;
 
-    private TextView mBeginGameText;
-    private ImageView mSettingsImage;
+    @BindView(R.id.tv_begin_game)
+    TextView mBeginGameText;
+    @BindView(R.id.iv_settings)
+    ImageView mSettingsImage;
 
     private long mLastPressBackTime;//上一次按下返回键的时间
     private long mCurPressBackTime;//当前按下返回键的时间
@@ -36,25 +41,9 @@ public class WelcomActivity extends BaseActivity {
     protected void initContentView() {
         super.initContentView();
         mBeginGameText = (TextView) findViewById(R.id.tv_begin_game);
-        mBeginGameText.setOnClickListener(this);
         mSettingsImage = (ImageView) findViewById(R.id.iv_settings);
+        mBeginGameText.setOnClickListener(this);
         mSettingsImage.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View view) {
-        super.onClick(view);
-        int id = view.getId();
-        switch (id) {
-            case R.id.tv_begin_game:
-                jumpToGameAct();
-                break;
-            case R.id.iv_settings:
-                jumpToSettingsAct();
-                break;
-            default:
-                break;
-        }
     }
 
     private void jumpToGameAct() {
@@ -77,6 +66,7 @@ public class WelcomActivity extends BaseActivity {
      * WelcomeActivity的启动模式是SingleTask,
      * 当从别的Activity中启动WelcomeActivity时会把Task Stack中WelcomeActivity之上的所有Activity销毁掉，
      * 并回调WelcomeActivity的onNewIntent()方法
+     *
      * @param intent
      */
     @Override
@@ -96,8 +86,20 @@ public class WelcomActivity extends BaseActivity {
         if (mCurPressBackTime - mLastPressBackTime > 2 * 1000) {
             ToastUtil.makeToast(that, getString(R.string.click_again_quit));
             mLastPressBackTime = SystemClock.uptimeMillis();
-        }else {
+        } else {
             finish();
+        }
+    }
+
+    @OnClick({R.id.iv_settings, R.id.tv_begin_game})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_settings:
+                jumpToSettingsAct();
+                break;
+            case R.id.tv_begin_game:
+                jumpToGameAct();
+                break;
         }
     }
 }
