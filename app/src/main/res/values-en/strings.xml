@@ -9,9 +9,10 @@
     <string name="new_game">New Game</string>
     <string name="regret">Regret Last Step</string>
     <string name="done">Done</string>
-    <string name="model">Model</string>
-    <string name="multilang">MultiLanguage</string>
-    <string name="about">Refrence</string>
+    <string name="model">Theme</string>
+    <string name="multilang">Language</string>
+    <string name="about">About</string>
     <string name="settings">Settings</string>
     <string name="click_again_quit">click again to quit</string>
+    <string name="about_desc">This is a gomuku game which supports two players meantime. The game can swithch theme and language. \nAuthor email: Jinxiao.Young@gmail.com, welcome to communicate!</string>
 </resources>

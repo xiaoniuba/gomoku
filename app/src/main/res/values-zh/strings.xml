@@ -9,9 +9,10 @@
     <string name="new_game">新局</string>
     <string name="regret">悔棋</string>
     <string name="done">完成</string>
-    <string name="model">模式</string>
-    <string name="multilang">多语言</string>
+    <string name="model">主题</string>
+    <string name="multilang">语言</string>
     <string name="about">关于</string>
     <string name="settings">设置</string>
     <string name="click_again_quit">再按一次退出</string>
+    <string name="about_desc">这是一个五子棋小游戏，支持两人对弈。该游戏有切换语言、切换主题等功能。\n作者联系邮箱:Jinxiao.Young@gmail.com。欢迎联系交流！</string>
 </resources>

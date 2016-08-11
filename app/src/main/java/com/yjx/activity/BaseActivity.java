@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.yjx.model.Language;
 import com.yjx.model.ThemeModel;
@@ -20,6 +21,8 @@ import com.yjx.utils.SharedPreferenceUtil;
 import com.yjx.wuziqi.R;
 
 import java.util.Locale;
+
+import butterknife.ButterKnife;
 
 /**
  * 本地activity基类
@@ -45,7 +48,12 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         initLang();
         initTheme();
         mRootLayout = mInflater.inflate(getContentLayout(), null);
+        ImageView back = (ImageView) mRootLayout.findViewById(R.id.iv_back);
+        if (back != null) {
+            back.setOnClickListener(this);
+        }
         setContentView(mRootLayout);
+        ButterKnife.bind(this);//ButerKnife的初始化操作应放在setContentView之后
         getIntentData();
         initHeaderView();
         initContentView();
@@ -112,6 +120,9 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     public void onClick(View view) {
         int id = view.getId();
         switch (id) {
+            case R.id.iv_back:
+                finish();
+                break;
             default:
                 break;
         }
